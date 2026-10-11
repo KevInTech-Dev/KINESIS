@@ -1,21 +1,91 @@
-import express, {Express} from "express";
+import cors from "cors";
+import express, { type Express, type Request, type Response } from "express";
+import rateLimit from "express-rate-limit";
+import helmet from "helmet";
+import { pinoHttp } from "pino-http";
+import swaggerUi from "swagger-ui-express";
+import { sendError, sendSuccess } from "./common/api.response.js";
+import { ForbiddenError } from "./common/errors/app-error.js";
+import { errorHandler, notFoundHandler } from "./common/middleware/error.middleware.js";
+import { logger } from "./config/logger.js";
+import swaggerSpec from "./config/swagger.js";
+import env from "./config/env.js";
 
 const app: Express = express();
+const API_PREFIX = env.API_PREFIX;
 
-const PORT = 3000;
+app.disable("x-powered-by");
+app.use(helmet());
+app.use(
+  pinoHttp({
+    logger,
+    serializers: {
+      req: (request) => ({
+        id: request.id,
+        method: request.method,
+        url: request.url?.split("?")[0],
+      }),
+      res: (response) => ({ statusCode: response.statusCode }),
+    },
+  }),
+);
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || env.CORS_ORIGINS.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+
+      callback(new ForbiddenError("Origine non autorisée"));
+    },
+    credentials: true,
+  }),
+);
+app.use(
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 100,
+    standardHeaders: "draft-8",
+    legacyHeaders: false,
+    skip: () => env.NODE_ENV === "test",
+    handler: (_req, res) => {
+      return sendError(
+        res,
+        "RATE_LIMIT_EXCEEDED",
+        "Trop de requêtes, veuillez réessayer plus tard",
+        429,
+      );
+    },
+  }),
+);
+app.use(express.json({ limit: "1mb" }));
+app.use(express.urlencoded({ extended: true, limit: "1mb" }));
 
 app.get("/", (_req, res) => {
-    res.json({
-        message: "Bienvenue sur l'API de KINESIS",
-        status: "Ok"
-    });
+  return sendSuccess(res, { status: "ok" }, "Bienvenue sur l'API KINESIS");
 });
 
-app.get("/api/health", (_req, res) => {
-    res.json({
-         "message": "L'API KINESIS fonctionne correctement",
-         "status": "OK"
-    })
+app.get(`${API_PREFIX}/health`, (_req: Request, res: Response) => {
+  return sendSuccess(
+    res,
+    { status: "ok", environment: env.NODE_ENV },
+    "L'API KINESIS fonctionne correctement",
+  );
 });
+
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec, {
+    customSiteTitle: "Documentation API KINESIS",
+  }),
+);
+app.get("/api-docs.json", (_req, res) => {
+  return res.json(swaggerSpec);
+});
+
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 export default app;

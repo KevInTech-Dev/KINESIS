@@ -14,6 +14,8 @@ export interface EnvConfig {
   DB_PASSWORD: string;
   DB_NAME: string;
   DB_LOGGING: boolean;
+  API_PREFIX: string;
+  CORS_ORIGINS: string[];
 }
 
 const getEnvVar = (key: string, defaultValue?: string): string => {
@@ -32,8 +34,8 @@ const getEnvVarNumber = (
 ): number => {
   const value = Number(getEnvVar(key, defaultValue?.toString()));
 
-  if (!Number.isInteger(value) || value <= 0) {
-    throw new Error(`La variable ${key} doit être un entier positif.`);
+  if (!Number.isInteger(value) || value < 1 || value > 65535) {
+    throw new Error(`La variable ${key} doit être un entier entre 1 et 65535.`);
   }
 
   return value;
@@ -54,7 +56,7 @@ const getNodeEnv = (): NodeEnv => {
 };
 
 const getBoolean = (key: string, defaultValue: string): boolean => {
-  const value = getEnvVar(key, defaultValue).toLowerCase();
+  const value = getEnvVar(key, defaultValue).trim().toLowerCase();
 
   if (value !== "true" && value !== "false") {
     throw new Error(`La variable ${key} doit valoir true ou false.`);
@@ -62,6 +64,25 @@ const getBoolean = (key: string, defaultValue: string): boolean => {
 
   return value === "true";
 };
+
+const getCorsOrigins = (): string[] => {
+  const origins = getEnvVar("CORS_ORIGINS", "http://localhost:3000")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
+  if (origins.length === 0) {
+    throw new Error("La variable CORS_ORIGINS doit contenir au moins une origine.");
+  }
+
+  return origins;
+};
+
+const apiPrefix = getEnvVar("API_PREFIX", "/api").trim().replace(/\/+$/, "");
+
+if (!apiPrefix.startsWith("/")) {
+  throw new Error("La variable API_PREFIX doit commencer par /.");
+}
 
 const env: EnvConfig = {
   NODE_ENV: getNodeEnv(),
@@ -72,6 +93,8 @@ const env: EnvConfig = {
   DB_PASSWORD: getEnvVar("DB_PASSWORD"),
   DB_NAME: getEnvVar("DB_NAME"),
   DB_LOGGING: getBoolean("DB_LOGGING", "false"),
+  API_PREFIX: apiPrefix,
+  CORS_ORIGINS: getCorsOrigins(),
 };
 
 export default env;
