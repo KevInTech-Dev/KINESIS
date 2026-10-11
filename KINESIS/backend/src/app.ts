@@ -11,4 +11,11 @@ app.get("/", (_req, res) => {
     });
 });
 
+app.get("/api/health", (_req, res) => {
+    res.json({
+         "message": "L'API KINESIS fonctionne correctement",
+         "status": "OK"
+    })
+});
+
 export default app;
