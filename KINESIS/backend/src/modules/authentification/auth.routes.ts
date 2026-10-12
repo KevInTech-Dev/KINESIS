@@ -38,4 +38,26 @@ router.post(
   authController.login,
 );
 
+/**
+ * @openapi
+ * /auth/refresh:
+ *   post:
+ *     summary: Renouveler une session avec le cookie HTTP-only
+ *     tags: [Authentification]
+ *     security:
+ *       - refreshCookie: []
+ */
+router.post("/refresh", authRateLimit, authController.refresh);
+
+/**
+ * @openapi
+ * /auth/logout:
+ *   post:
+ *     summary: Révoquer la session et supprimer le cookie de renouvellement
+ *     tags: [Authentification]
+ *     security:
+ *       - refreshCookie: []
+ */
+router.post("/logout", authController.logout);
+
 export default router;

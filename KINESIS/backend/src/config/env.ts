@@ -17,7 +17,8 @@ export interface EnvConfig {
   API_PREFIX: string;
   CORS_ORIGINS: string[];
   JWT_SECRET: string;
-  JWT_ACCESS_TOKEN_TTL_SECONDS: number;
+  ACCESS_TOKEN_EXPIRY_TIME: number;
+  REFRESH_TOKEN_EXPIRY_TIME: number;
 }
 
 const getEnvVar = (key: string, defaultValue?: string): string => {
@@ -124,9 +125,13 @@ const env: EnvConfig = {
   API_PREFIX: apiPrefix,
   CORS_ORIGINS: getCorsOrigins(),
   JWT_SECRET: getJwtSecret(),
-  JWT_ACCESS_TOKEN_TTL_SECONDS: getEnvVarPositiveInteger(
-    "JWT_ACCESS_TOKEN_TTL_SECONDS",
+  ACCESS_TOKEN_EXPIRY_TIME: getEnvVarPositiveInteger(
+    "ACCESS_TOKEN_EXPIRY_TIME",
     900,
+  ),
+  REFRESH_TOKEN_EXPIRY_TIME: getEnvVarPositiveInteger(
+    "REFRESH_TOKEN_EXPIRY_TIME",
+    604800,
   ),
 };
 

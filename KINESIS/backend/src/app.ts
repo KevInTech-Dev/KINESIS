@@ -1,4 +1,5 @@
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import express, { type Express, type Request, type Response } from "express";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
@@ -62,6 +63,7 @@ app.use(
 );
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: true, limit: "1mb" }));
+app.use(cookieParser());
 
 app.get("/", (_req, res) => {
   return sendSuccess(res, { status: "ok" }, "Bienvenue sur l'API KINESIS");

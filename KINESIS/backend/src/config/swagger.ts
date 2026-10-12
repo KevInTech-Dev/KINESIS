@@ -24,6 +24,11 @@ const swaggerSpec = swaggerJsdoc({
           scheme: "bearer",
           bearerFormat: "JWT",
         },
+        refreshCookie: {
+          type: "apiKey",
+          in: "cookie",
+          name: "kinesis_refresh_token",
+        },
       },
     },
   },

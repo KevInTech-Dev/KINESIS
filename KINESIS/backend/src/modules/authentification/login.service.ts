@@ -1,11 +1,21 @@
-import { AuthenticationError, ConflictError } from "../../common/errors/app-error.js";
+import { randomBytes, createHash } from "node:crypto";
+import {
+  AuthenticationError,
+  ConflictError,
+  UnauthorizedError,
+} from "../../common/errors/app-error.js";
 import env from "../../config/env.js";
 import { UniqueConstraintError } from "sequelize";
 import type { LoginInput, RegisterTravelerInput } from "./auth.schema.js";
 import { hashPassword, verifyPassword } from "./password.service.js";
 import { AccountRepository } from "./account.repository.js";
 import { createAccessToken } from "./token.service.js";
-import type { AccessTokenResponse } from "./auth.type.js";
+import { RefreshTokenRepository } from "./refreshToken.repository.js";
+import type { AccessTokenResponse, AuthenticatedUser } from "./auth.type.js";
+
+export interface AuthSessionResponse extends AccessTokenResponse {
+  refreshToken: string;
+}
 
 export interface TravelerAccountResponse {
   id: string;
@@ -17,7 +27,29 @@ export interface TravelerAccountResponse {
 }
 
 export class AuthService {
-  constructor(private readonly accountRepository = new AccountRepository()) {}
+  constructor(
+    private readonly accountRepository = new AccountRepository(),
+    private readonly refreshTokenRepository = new RefreshTokenRepository(),
+  ) {}
+
+  private async createSession(
+    user: AuthenticatedUser,
+  ): Promise<AuthSessionResponse> {
+    const refreshToken = randomBytes(32).toString("base64url");
+    const tokenHash = createHash("sha256").update(refreshToken).digest("hex");
+    const expiresAt = new Date(
+      Date.now() + env.REFRESH_TOKEN_EXPIRY_TIME * 1000,
+    );
+
+    await this.refreshTokenRepository.create(user.id, tokenHash, expiresAt);
+
+    return {
+      accessToken: createAccessToken(user),
+      refreshToken,
+      tokenType: "Bearer",
+      expiresIn: env.ACCESS_TOKEN_EXPIRY_TIME,
+    };
+  }
 
   async registerTraveler(
     input: RegisterTravelerInput,
@@ -44,7 +76,7 @@ export class AuthService {
     }
   }
 
-  async login(input: LoginInput): Promise<AccessTokenResponse> {
+  async login(input: LoginInput): Promise<AuthSessionResponse> {
     const account = await this.accountRepository.findByIdentifier(
       input.identifier,
     );
@@ -57,13 +89,40 @@ export class AuthService {
       throw new AuthenticationError("Identifiant ou mot de passe invalide");
     }
 
+    return this.createSession({ id: account.id, role: account.role });
+  }
+
+  async refresh(refreshToken: string): Promise<AuthSessionResponse> {
+    const tokenHash = createHash("sha256").update(refreshToken).digest("hex");
+    const replacementToken = randomBytes(32).toString("base64url");
+    const replacementHash = createHash("sha256")
+      .update(replacementToken)
+      .digest("hex");
+    const expiresAt = new Date(
+      Date.now() + env.REFRESH_TOKEN_EXPIRY_TIME * 1000,
+    );
+    const account = await this.refreshTokenRepository.rotate(
+      tokenHash,
+      replacementHash,
+      expiresAt,
+    );
+
+    if (!account) {
+      throw new UnauthorizedError("Jeton de renouvellement invalide ou expiré");
+    }
+
     return {
-      accessToken: createAccessToken({
-        id: account.id,
-        role: account.role,
-      }),
+      accessToken: createAccessToken({ id: account.id, role: account.role }),
+      refreshToken: replacementToken,
       tokenType: "Bearer",
-      expiresIn: env.JWT_ACCESS_TOKEN_TTL_SECONDS,
+      expiresIn: env.ACCESS_TOKEN_EXPIRY_TIME,
     };
+  }
+
+  async logout(refreshToken: string | undefined): Promise<void> {
+    if (!refreshToken) return;
+
+    const tokenHash = createHash("sha256").update(refreshToken).digest("hex");
+    await this.refreshTokenRepository.revoke(tokenHash);
   }
 }

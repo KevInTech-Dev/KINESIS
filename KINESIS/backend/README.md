@@ -31,18 +31,32 @@ Copy `.env.example` to `.env` and set the local database credentials. Configure
 `CORS_ORIGINS` as a comma-separated allowlist for the frontend origins.
 Set `JWT_SECRET` to a cryptographically random value of at least 32 bytes; never
 reuse the example placeholder or commit a real secret. Access tokens live for
-`JWT_ACCESS_TOKEN_TTL_SECONDS` seconds (900 by default).
+`ACCESS_TOKEN_EXPIRY_TIME` seconds (900 by default); refresh sessions last
+`REFRESH_TOKEN_EXPIRY_TIME` seconds (604800 by default).
 
 Authentication lives in `src/modules/authentification`: traveler registration
 and login, bcrypt password hashing, validated JWT access tokens,
 authentication and role guards, and request schemas. Public registration
 creates traveler accounts only; company and agent accounts must be provisioned
 through their future authorized workflows.
+Login and refresh return the access token in the JSON response and set a
+rotating opaque refresh token in an HttpOnly cookie. Logout revokes the current
+refresh-token session.
 
-The initial database migration creates a shared account table and a separate
-traveler profile table. Apply migrations explicitly before starting the API;
-the server never alters the database schema automatically. The initial auth
-endpoints are `POST /api/auth/register` and `POST /api/auth/login`.
+The first migration creates a shared account table and traveler profile; the
+next adds refresh sessions, and the latest migration adds company and agent
+profiles. Apply migrations explicitly before starting the API; the server
+never alters the database schema automatically. Auth endpoints are
+`POST /api/auth/register`, `/api/auth/login`, `/api/auth/refresh`, and
+`/api/auth/logout`.
+
+The class diagram's `Utilisateur` is represented by `Account`; traveler,
+company, and agent data live in one-to-one `TravelerProfile`,
+`CompanyProfile`, and `AgentProfile` models. `AgentProfile` links an agent to
+the company profile that employs them. The administrator has an account role
+but no separate profile because the diagram defines no additional admin
+attributes. Company login email and phone stay on `Account`; `CompanyProfile`
+`address` means the company's physical location.
 
 ```sh
 pnpm install

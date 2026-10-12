@@ -30,7 +30,7 @@ export const createAccessToken = (user: AuthenticatedUser): string => {
       subject: user.id,
       issuer: TOKEN_ISSUER,
       audience: TOKEN_AUDIENCE,
-      expiresIn: env.JWT_ACCESS_TOKEN_TTL_SECONDS,
+      expiresIn: env.ACCESS_TOKEN_EXPIRY_TIME,
     },
   );
 };
