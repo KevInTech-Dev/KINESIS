@@ -29,9 +29,24 @@ override persistence methods when their requirements differ.
 
 Copy `.env.example` to `.env` and set the local database credentials. Configure
 `CORS_ORIGINS` as a comma-separated allowlist for the frontend origins.
+Set `JWT_SECRET` to a cryptographically random value of at least 32 bytes; never
+reuse the example placeholder or commit a real secret. Access tokens live for
+`JWT_ACCESS_TOKEN_TTL_SECONDS` seconds (900 by default).
+
+Authentication lives in `src/modules/authentification`: traveler registration
+and login, bcrypt password hashing, validated JWT access tokens,
+authentication and role guards, and request schemas. Public registration
+creates traveler accounts only; company and agent accounts must be provisioned
+through their future authorized workflows.
+
+The initial database migration creates a shared account table and a separate
+traveler profile table. Apply migrations explicitly before starting the API;
+the server never alters the database schema automatically. The initial auth
+endpoints are `POST /api/auth/register` and `POST /api/auth/login`.
 
 ```sh
 pnpm install
+pnpm db:migrate
 pnpm dev
 pnpm typecheck
 pnpm build

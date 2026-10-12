@@ -10,6 +10,7 @@ import { errorHandler, notFoundHandler } from "./common/middleware/error.middlew
 import { logger } from "./config/logger.js";
 import swaggerSpec from "./config/swagger.js";
 import env from "./config/env.js";
+import authRoutes from "./modules/authentification/auth.routes.js";
 
 const app: Express = express();
 const API_PREFIX = env.API_PREFIX;
@@ -73,6 +74,8 @@ app.get(`${API_PREFIX}/health`, (_req: Request, res: Response) => {
     "L'API KINESIS fonctionne correctement",
   );
 });
+
+app.use(`${API_PREFIX}/auth`, authRoutes);
 
 app.use(
   "/api-docs",

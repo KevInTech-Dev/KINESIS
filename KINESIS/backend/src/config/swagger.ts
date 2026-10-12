@@ -6,7 +6,7 @@ import env from "./env.js";
 const moduleFiles = resolve(
   dirname(fileURLToPath(import.meta.url)),
   "../modules/**/*.{ts,js}",
-);
+).replace(/\\/g, "/");
 
 const swaggerSpec = swaggerJsdoc({
   definition: {
@@ -17,6 +17,15 @@ const swaggerSpec = swaggerJsdoc({
       description: "API REST de la plateforme KINESIS",
     },
     servers: [{ url: env.API_PREFIX }],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+    },
   },
   apis: [moduleFiles],
 });

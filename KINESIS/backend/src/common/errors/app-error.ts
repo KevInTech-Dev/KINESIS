@@ -23,6 +23,12 @@ export class UnauthorizedError extends AppError {
   }
 }
 
+export class AuthenticationError extends AppError {
+  constructor(message = "Authentification échouée") {
+    super(message, "AUTHENTICATION_ERROR", 401);
+  }
+}
+
 export class ForbiddenError extends AppError {
   constructor(message = "Accès interdit") {
     super(message, "FORBIDDEN", 403);
