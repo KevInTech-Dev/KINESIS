@@ -6,8 +6,8 @@ import {
   Model,
   Sequelize,
 } from "sequelize";
-import { Account } from "./Account.js";
-import { CompanyProfile } from "./CompanyProfile.js";
+import { Account } from "./Account";
+import { CompanyProfile } from "./CompanyProfile";
 
 export class AgentProfile extends Model<
   InferAttributes<AgentProfile>,

@@ -1,14 +1,14 @@
 import jwt from "jsonwebtoken";
-import env from "../../config/env.js";
+import env from "../../config/env";
 import {
   BadRequestError,
   UnauthorizedError,
-} from "../../common/errors/app-error.js";
+} from "../../common/errors/app-error";
 import {
   USER_ROLES,
   type AuthenticatedUser,
   type UserRole,
-} from "./auth.type.js";
+} from "./auth.type";
 
 const TOKEN_ISSUER = "kinesis-api";
 const TOKEN_AUDIENCE = "kinesis";

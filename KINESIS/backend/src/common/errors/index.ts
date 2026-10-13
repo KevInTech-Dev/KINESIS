@@ -7,4 +7,4 @@ export {
   NotFoundError,
   UnauthorizedError,
   ValidationError,
-} from "./app-error.js";
+} from "./app-error";

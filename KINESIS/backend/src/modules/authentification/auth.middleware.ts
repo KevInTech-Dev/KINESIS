@@ -1,7 +1,7 @@
 import type { RequestHandler } from "express";
-import { UnauthorizedError } from "../../common/errors/app-error.js";
-import { AccountRepository } from "./account.repository.js";
-import { verifyAccessToken } from "./token.service.js";
+import { UnauthorizedError } from "../../common/errors/app-error";
+import { AccountRepository } from "./account.repository";
+import { verifyAccessToken } from "./token.service";
 
 const accountRepository = new AccountRepository();
 

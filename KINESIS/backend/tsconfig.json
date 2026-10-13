@@ -1,10 +1,19 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "rootDir": "./src",
     "outDir": "./dist",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@config/*": ["./src/config/*"],
+      "@database/*": ["./src/database/*"],
+      "@modules/*": ["./src/modules/*"],
+      "@middlewares/*": ["./src/common/middleware/*"],
+      "@common/*": ["./src/common/*"],
+      "@enums/*": ["./src/enums/*"]
+    },
   
     "strict": true,
     "esModuleInterop": true,

@@ -1,7 +1,7 @@
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import swaggerJsdoc from "swagger-jsdoc";
-import env from "./env.js";
+import env from "./env";
 
 const moduleFiles = resolve(
   dirname(fileURLToPath(import.meta.url)),

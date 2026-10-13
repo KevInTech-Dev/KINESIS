@@ -3,15 +3,15 @@ import {
   AuthenticationError,
   ConflictError,
   UnauthorizedError,
-} from "../../common/errors/app-error.js";
-import env from "../../config/env.js";
+} from "../../common/errors/app-error";
+import env from "../../config/env";
 import { UniqueConstraintError } from "sequelize";
-import type { LoginInput, RegisterTravelerInput } from "./auth.schema.js";
-import { hashPassword, verifyPassword } from "./password.service.js";
-import { AccountRepository } from "./account.repository.js";
-import { createAccessToken } from "./token.service.js";
-import { RefreshTokenRepository } from "./refreshToken.repository.js";
-import type { AccessTokenResponse, AuthenticatedUser } from "./auth.type.js";
+import type { LoginInput, RegisterTravelerInput } from "./auth.schema";
+import { hashPassword, verifyPassword } from "./password.service";
+import { AccountRepository } from "./account.repository";
+import { createAccessToken } from "./token.service";
+import { RefreshTokenRepository } from "./refreshToken.repository";
+import type { AccessTokenResponse, AuthenticatedUser } from "./auth.type";
 
 export interface AuthSessionResponse extends AccessTokenResponse {
   refreshToken: string;

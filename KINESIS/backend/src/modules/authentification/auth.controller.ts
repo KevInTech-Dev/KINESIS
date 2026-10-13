@@ -1,11 +1,11 @@
 import type { Request, Response } from "express";
-import { sendCreated, sendError, sendSuccess } from "../../common/api.response.js";
-import env from "../../config/env.js";
+import { sendCreated, sendError, sendSuccess } from "../../common/api.response";
+import env from "../../config/env";
 import type {
   LoginInput,
   RegisterTravelerInput,
-} from "./auth.schema.js";
-import { AuthService } from "./login.service.js";
+} from "./auth.schema";
+import { AuthService } from "./login.service";
 
 export class AuthController {
   constructor(private readonly authService = new AuthService()) {}

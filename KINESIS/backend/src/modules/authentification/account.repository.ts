@@ -1,7 +1,7 @@
 import { Op, UniqueConstraintError } from "sequelize";
-import sequelize from "../../database/sequelize.js";
-import { Account, TravelerProfile } from "../../database/models/index.js";
-import type { RegisterTravelerInput } from "./auth.schema.js";
+import sequelize from "../../database/sequelize";
+import { Account, TravelerProfile } from "../../database/models/index";
+import type { RegisterTravelerInput } from "./auth.schema";
 
 export class AccountRepository {
   async findById(id: string): Promise<Account | null> {

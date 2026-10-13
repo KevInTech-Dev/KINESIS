@@ -1,5 +1,5 @@
 import rateLimit from "express-rate-limit";
-import { sendError } from "../../common/api.response.js";
+import { sendError } from "../../common/api.response";
 
 export const authRateLimit = rateLimit({
   windowMs: 15 * 60 * 1000,

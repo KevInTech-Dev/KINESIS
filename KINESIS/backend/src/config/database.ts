@@ -1,6 +1,6 @@
 
 import type { Options } from "sequelize";
-import env from "./env.js";
+import env from "./env";
 
 const options: Options = {
   host: env.DB_HOST,

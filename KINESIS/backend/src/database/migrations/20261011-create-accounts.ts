@@ -1,5 +1,5 @@
 import { DataTypes, type QueryInterface } from "sequelize";
-import { USER_ROLES } from "../../modules/authentification/auth.type.js";
+import { USER_ROLES } from "../../modules/authentification/auth.type";
 
 export const name = "20261011-create-accounts";
 

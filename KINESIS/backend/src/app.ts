@@ -5,13 +5,16 @@ import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import { pinoHttp } from "pino-http";
 import swaggerUi from "swagger-ui-express";
-import { sendError, sendSuccess } from "./common/api.response.js";
-import { ForbiddenError } from "./common/errors/app-error.js";
-import { errorHandler, notFoundHandler } from "./common/middleware/error.middleware.js";
-import { logger } from "./config/logger.js";
-import swaggerSpec from "./config/swagger.js";
-import env from "./config/env.js";
-import authRoutes from "./modules/authentification/auth.routes.js";
+import { sendError, sendSuccess } from "@common/api.response";
+import { ForbiddenError } from "@common/errors/app-error";
+import {
+  errorHandler,
+  notFoundHandler,
+} from "@middlewares/error.middleware";
+import { logger } from "@config/logger";
+import swaggerSpec from "@config/swagger";
+import env from "@config/env";
+import authRoutes from "@modules/authentification/auth.routes";
 
 const app: Express = express();
 const API_PREFIX = env.API_PREFIX;

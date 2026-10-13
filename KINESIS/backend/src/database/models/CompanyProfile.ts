@@ -9,8 +9,8 @@ import {
 import {
   type CompanyStatus,
   COMPANY_STATUSES,
-} from "../../modules/compagnie/company.type.js";
-import { Account } from "./Account.js";
+} from "../../modules/compagnie/company.type";
+import { Account } from "./Account";
 
 export class CompanyProfile extends Model<
   InferAttributes<CompanyProfile>,

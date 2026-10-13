@@ -1,5 +1,5 @@
 import { DataTypes, type QueryInterface } from "sequelize";
-import { COMPANY_STATUSES } from "../../modules/compagnie/company.type.js";
+import { COMPANY_STATUSES } from "../../modules/compagnie/company.type";
 
 export const name = "20261012-create-company-agent-profiles";
 

@@ -1,8 +1,8 @@
 import type { ErrorRequestHandler, RequestHandler } from "express";
 import { ZodError } from "zod";
-import { sendError } from "../api.response.js";
-import { AppError, NotFoundError, ValidationError } from "../errors/app-error.js";
-import { logger } from "../../config/logger.js";
+import { sendError } from "../api.response";
+import { AppError, NotFoundError, ValidationError } from "../errors/app-error";
+import { logger } from "../../config/logger";
 
 export const notFoundHandler: RequestHandler = (req, _res, next) => {
   next(new NotFoundError(`Route ${req.method} ${req.originalUrl} introuvable`));

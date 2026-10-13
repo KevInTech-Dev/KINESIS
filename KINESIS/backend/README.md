@@ -12,6 +12,14 @@ Repositories own database access. Do not add generic repository behavior that
 cannot be implemented correctly for every model; feature repositories should
 override persistence methods when their requirements differ.
 
+## Import aliases
+
+Use the `@` aliases configured in `tsconfig.json` for imports across backend
+areas, for example `@modules/...`, `@database/...`, `@config/...`, and
+`@common/...`. The `@/...` alias points to the `src` root. Imports between
+backend source files omit file extensions. The build runs `tsc-alias` after
+TypeScript to add the `.js` extensions and rewrite aliases for Node.js ESM.
+
 ## Shared HTTP behavior
 
 - Use `validate` from `src/common/middleware/validate.middleware.ts` for request
@@ -45,8 +53,10 @@ refresh-token session.
 
 The first migration creates a shared account table and traveler profile; the
 next adds refresh sessions, and the latest migration adds company and agent
-profiles. Apply migrations explicitly before starting the API; the server
-never alters the database schema automatically. Auth endpoints are
+profiles, then company-owned routes (`Trajet`) and scheduled trip occurrences
+(`Voyage`). Each `Voyage` references a `Trajet`; departure and arrival cities
+are not duplicated on the voyage. Apply migrations explicitly before starting
+the API; the server never alters the database schema automatically. Auth endpoints are
 `POST /api/auth/register`, `/api/auth/login`, `/api/auth/refresh`, and
 `/api/auth/logout`.
 

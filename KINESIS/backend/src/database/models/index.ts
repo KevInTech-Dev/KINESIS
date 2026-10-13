@@ -1,14 +1,16 @@
-export { Account, initAccountModel } from "./Account.js";
-export { AgentProfile, initAgentProfileModel } from "./AgentProfile.js";
+export { Account, initAccountModel } from "./Account";
+export { AgentProfile, initAgentProfileModel } from "./AgentProfile";
 export {
   CompanyProfile,
   initCompanyProfileModel,
-} from "./CompanyProfile.js";
+} from "./CompanyProfile";
 export {
   initRefreshSessionModel,
   RefreshSession,
-} from "./RefreshSession.js";
+} from "./RefreshSession";
 export {
   initTravelerProfileModel,
   TravelerProfile,
-} from "./TravelerProfile.js";
+} from "./TravelerProfile";
+export { initTrajetModel, Trajet } from "./Trajet";
+export { initVoyageModel, Voyage } from "./Voyage";

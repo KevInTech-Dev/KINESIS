@@ -1,12 +1,14 @@
 import {Sequelize} from "sequelize";
-import options from "../config/database.js"
+import options from "../config/database"
 import {
     initAgentProfileModel,
     initAccountModel,
     initCompanyProfileModel,
     initRefreshSessionModel,
+    initTrajetModel,
     initTravelerProfileModel,
-} from "./models/index.js";
+    initVoyageModel,
+} from "./models/index";
 
 const sequelize = new Sequelize(options);
 
@@ -15,6 +17,8 @@ initTravelerProfileModel(sequelize);
 initCompanyProfileModel(sequelize);
 initAgentProfileModel(sequelize);
 initRefreshSessionModel(sequelize);
+initTrajetModel(sequelize);
+initVoyageModel(sequelize);
 
 export const testConnection = async (): Promise<void> => {
     await sequelize.authenticate();

@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import { BadRequestError } from "../../common/errors/app-error.js";
+import { BadRequestError } from "../../common/errors/app-error";
 
 const BCRYPT_ROUNDS = 12;
 const MAX_BCRYPT_PASSWORD_BYTES = 72;

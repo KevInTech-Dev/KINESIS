@@ -6,7 +6,7 @@ import {
   Model,
   Sequelize,
 } from "sequelize";
-import { Account } from "./Account.js";
+import { Account } from "./Account";
 
 export class TravelerProfile extends Model<
   InferAttributes<TravelerProfile>,

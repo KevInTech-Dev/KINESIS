@@ -1,5 +1,5 @@
-import sequelize from "../../database/sequelize.js";
-import { Account, RefreshSession } from "../../database/models/index.js";
+import sequelize from "../../database/sequelize";
+import { Account, RefreshSession } from "../../database/models/index";
 
 export class RefreshTokenRepository {
   create(

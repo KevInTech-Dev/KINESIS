@@ -2,8 +2,8 @@ import type { RequestHandler } from "express";
 import {
   ForbiddenError,
   UnauthorizedError,
-} from "../../common/errors/app-error.js";
-import type { UserRole } from "./auth.type.js";
+} from "../../common/errors/app-error";
+import type { UserRole } from "./auth.type";
 
 export const authorize = (...allowedRoles: UserRole[]): RequestHandler => {
   return (req, _res, next) => {
